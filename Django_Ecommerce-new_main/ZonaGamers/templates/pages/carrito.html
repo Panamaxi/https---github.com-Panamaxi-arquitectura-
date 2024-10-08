@@ -1,0 +1,47 @@
+{% extends '../base/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+    <!--carrito-->
+    <div class="container mt-5 carrito">
+        <h1>Carrito de Compras</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col"></th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrito %}
+                <tr>
+                    <th scope="row">{{item.id}}</th>
+                    <td>
+                        {% if item.juego.imagen %}
+                            <img src="{{item.juego.imagen.url}}" alt="{{item.juego.nombre}}" style="max-height: 100px; max-width: 90px;">
+                        {% else %}
+                            <img src="{% static 'images/last.avif' %}" alt="{{item.juego.nombre}}" style="max-height: 100px; max-width: 90px;">    
+                        {% endif %}
+                    </td>
+                    <td>{{item.juego.nombre}}</td>
+                    <td>${{item.juego.precio|intcomma}}</td>
+                    <td>{{item.cantidad}}</td>
+                    <td>${{item.total|intcomma}}</td>
+                    <td><a href="{% url 'remove_from_cart' id=item.juego.id %}" class="btn btn-primary">-</a>
+                        <a href="{% url 'add_to_cart' id=item.juego.id %}" class="btn btn-primary">+</a></td>   
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-right">
+            <h4>Total: ${{carrito.total|intcomma}}</h4>
+            <a class="btn btn-primary" href="{% url 'clear_cart' cartId=1%}">Pagar</a>
+        </div>
+    </div>
+{% endblock %}
+
