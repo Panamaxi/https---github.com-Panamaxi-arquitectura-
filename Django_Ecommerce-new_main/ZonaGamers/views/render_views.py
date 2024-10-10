@@ -11,10 +11,24 @@ def home(request):
     return render(request,'pages/index.html',context)
     
 def catalogo(request):
-    juegos = Juego.objects.all()
+    query = request.GET.get('q')
+    
+    if query:
+        # Filtramos los juegos que contienen el término de búsqueda en el nombre
+        juegos = Juego.objects.filter(nombre__icontains=query)
+    else:
+        # Si no hay búsqueda, mostramos todos los juegos
+        juegos = Juego.objects.all()
+
     context = {
-        "juegos": juegos
+        "juegos": juegos,
+        "mensaje_error": None,  # Inicializamos el mensaje de error como None
     }
+
+    # Si no se encuentran juegos después de la búsqueda, asignamos un mensaje de error
+    if query and not juegos.exists():
+        context["mensaje_error"] = "No se encontraron los productos en el catalogo de ferremas."
+
     return render(request, 'pages/catalogo.html', context)
 
 def producto_spider(request):

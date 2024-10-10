@@ -1,45 +1,60 @@
-{% load  static %}
+{% extends '../base/base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/Estilos.css' %}" />
 {% block content %}
-    <div class="container mt-5">
-      
-      <div class="row">
-        <h2 id="titulo_catalogo">Nuestro cátalogo</h2>
-        
-      </div>
-        <div class="row mt-5 d-flex card-container">
-             {% for juego in juegos %}
-            <div class="card card-catalogo col-lg-2 col-md-4 col-6">
-              {% if juego.imagen %}
-                <img src="{{juego.imagen.url}}" alt="{{juego.nombre}}" class="card-img-top">
-              {% else %}
-                <img src="{% static 'images/last.avif' %}" alt="{{juego.nombre}}" class="card-img-top">    
-              {% endif %}
-                <div class="card-body card-content">
-                    <h5 class="card-title">{{ juego.nombre }}</h5>
-                    <h5 class="card-price">${{ juego.precio }}</h5>
-                    <h5 class="card-title">{{ juego.descripcion }}</h5>
-                    <a href="{% url 'remove_from_cart' id=juego.id %}" class="btn btn-primary">-</a>
-                    <a href="{% url 'add_to_cart' id=juego.id %}" class="btn btn-primary">+</a>
-                    
-                </div>
-            </div> 
-            {% endfor %}
+<div class="container mt-5">
+  <div class="row">
+      <h2 id="titulo_catalogo" class="text-center" style="color: white;">Nuestro catálogo de ferremas</h2>
+  </div>
+</div>
 
-                
+<!-- Formulario de búsqueda -->
+<div class="row">
+    <form method="GET" action="{% url 'catalogo' %}" class="mb-5">
+        <div class="input-group">
+            <input type="text" class="form-control" name="q" placeholder="Buscar producto...">
+            <button class="btn btn-primary" type="submit">Buscar</button>
         </div>
-        <div class=" page-changer-container mt-5 rounded" style="background-color: white; ">
-            <nav aria-label="Page navigation example" class=" mx-auto " style="width: fit-content;">
-                <ul class="pagination ">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-            </nav>
+    </form>
+</div>
 
-        </div>
+<!-- Mensaje de error -->
+{% if mensaje_error %}
+    <div class="alert alert-danger" role="alert">
+        {{ mensaje_error }}
     </div>
+{% endif %}
 
+<div class="row mt-5 d-flex card-container">
+    {% for juego in juegos %}
+    <div class="card card-catalogo col-lg-3 col-md-4 col-6 mb-4 text-center">
+        {% if juego.imagen %}
+            <img src="{{ juego.imagen.url }}" alt="{{ juego.nombre }}" class="card-img-top img-producto">
+        {% else %}
+            <img src="{% static 'images/last.avif' %}" alt="{{ juego.nombre }}" class="card-img-top img-producto">    
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ juego.nombre }}</h5>
+            <h5 class="card-price">${{ juego.precio }}</h5>
+            <p class="card-description">{{ juego.descripcion }}</p>
+            <a href="{% url 'add_to_cart' juego.id %}" class="btn btn-success">COMPRAR</a> <!-- Asegúrate que el ID esté correcto -->
+        </div>
+    </div> 
+    {% empty %}
+        <p>No hay juegos disponibles.</p>
+    {% endfor %}
+</div>
 
+<!-- Paginación -->
+<div class="page-changer-container mt-5 rounded" style="background-color: white;">
+    <nav aria-label="Page navigation example" class="mx-auto" style="width: fit-content;">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</div>
 {% endblock %}

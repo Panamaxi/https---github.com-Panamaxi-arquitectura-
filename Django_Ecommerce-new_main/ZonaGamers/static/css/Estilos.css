@@ -7,19 +7,19 @@
     
 }
 
-#body_index{
-    background-color: rgb(210, 210, 210);
-    background-image: url(../images/fondomario.jpg);
+#body_index {
+    
+    background-image: url("{% static 'images/fondoferremas.jpg' %}");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
-    
 }
+
 
 #body_registro{
 
-    background-image: url(../images/fondo3.png);
+    background-image: url("{% static 'images/fondoferremas.jpg' %}");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -27,7 +27,7 @@
 }
 
 #body_login{
-    background-image: url(../images/fondo3.png);
+    background-image: url("{% static 'images/fondoferremas.jpg' %}");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -35,7 +35,7 @@
 }
 
 #body_carrito{
-    background-image: url(../images/fondo3.png);
+    background-image: url("{% static 'images/fondoferremas.jpg' %}");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -43,7 +43,7 @@
 }
 
 #body_about{
-    background-image: url(../images/fondo3.png);
+    background-image: url("{% static 'images/fondoferremas.jpg' %}");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -51,7 +51,7 @@
 }
 
 #body_producto{
-    background-image: url(../images/fondo3.png);
+    background-image: url("{% static 'images/fondoferremas.jpg' %}");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -88,7 +88,7 @@
 }
 
 #bestseller_header{
-    background-image: url(../images/confeti.jpg);
+    background-image: url("{% static 'images/ferremass.jpg' %}");
     font-weight: bold;
     color: whitesmoke;
     font-family: monospace;
@@ -98,14 +98,13 @@
 
 .imagen_redondeada_2{
 
-    border-radius: 100%;
-    overflow: hidden;
-    background-color: rgb(255, 0, 0);
-    width: 200px;
-    height: 200px;
-    border-style: outset;
-    border-color: black;
-    border-width: 5px;
+    border-radius: 50%;
+    border: 2px solid #ccc; /* Borde gris claro */
+    padding: 5px; /* Espacio entre el borde y la imagen */
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    
     
 }
 
@@ -152,10 +151,65 @@ h5{
     padding: 0px;
 }
 
-.alerta{
+.alerta {
     position: fixed; /* O puedes usar position: absolute; */
     z-index: 1000; /* Asegúrate de que el índice Z sea alto */
 }
+
+.img-producto {
+    width: 100%; /* Asegura que la imagen use todo el ancho del contenedor */
+    height: 200px; /* Ajusta la altura según tus necesidades */
+    object-fit: cover; /* Mantiene la proporción de la imagen y corta los excesos */
+}
+
+/* Estilos generales */
+.card {
+    border: none; /* Elimina el borde de la tarjeta */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para las tarjetas */
+    transition: transform 0.2s; /* Transición suave al pasar el mouse */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Efecto de hover */
+}
+
+/* Ajustes para las imágenes de los productos */
+.img-producto {
+    width: 100%; /* Asegura que la imagen use todo el ancho del contenedor */
+    height: 200px; /* Ajusta la altura según tus necesidades */
+    object-fit: cover; /* Mantiene la proporción de la imagen y corta los excesos */
+}
+
+/* Estilos para la descripción del producto */
+.card-description {
+    font-size: 0.9em; /* Tamaño de fuente más pequeño para la descripción */
+    color: #555; /* Color más suave para la descripción */
+}
+
+/* Estilos para los precios */
+.card-price {
+    color: #d9534f; /* Color rojo para el precio */
+    font-weight: bold; /* Negrita para el precio */
+}
+
+/* Estilos de paginación */
+.page-changer-container {
+    padding: 1rem; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+.pagination .page-link {
+    border: none; /* Sin borde para los enlaces de paginación */
+    color: #007bff; /* Color de texto */
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff; /* Color de fondo activo */
+    color: white; /* Color de texto activo */
+}
+
+
+
 
 
 
