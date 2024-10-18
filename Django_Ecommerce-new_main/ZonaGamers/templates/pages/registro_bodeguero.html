@@ -1,0 +1,27 @@
+{% extends '../base/base.html' %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/Estilos.css' %}" />
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center" style="color: white;">Registro de Bodeguero</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'registro_bodeguero' %}" class="mt-4">
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Nombre de usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <input type="email" name="email" placeholder="Correo electrónico" required>
+            <input type="text" name="name" placeholder="Nombre completo" required>
+            <input type="submit" value="Registrar">
+        </form>
+        
+</div>
+{% endblock %}

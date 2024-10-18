@@ -1,0 +1,19 @@
+{% extends '../base/base.html' %}
+{% load static %}
+
+{% block content %}
+<form class="px-4 py-3" method="post" action="{% url 'login_user' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="username" class="form-label" style="font-weight: bold;">Nombre de Usuario</label>
+        <input name="username" class="form-control" id="username" placeholder="Ingrese su nombre de usuario" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label" style="font-weight: bold;">Contraseña</label>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Ingrese su contraseña" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Ingresar</button>
+</form>
+
+{% endblock %}
+

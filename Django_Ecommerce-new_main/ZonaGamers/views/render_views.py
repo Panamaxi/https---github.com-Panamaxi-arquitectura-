@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from ..models import Usuario, Carrito, Juego, CarritoJuego
 from django.contrib.auth.decorators import login_required
 
@@ -71,6 +71,20 @@ def crud(request):
         "usuarios": usuarios,
     }
     return render(request, "pages/crud.html", context)
+
+def bodeguero(request):
+    context = {} 
+    return render(request,'pages/bodeguero.html',context)
+
+def catalogo_bodeguero(request):
+    juegos = Juego.objects.all() 
+    # Obtiene todos los productos
+    return render(request, 'pages/catalogo_bodeguero.html', {'juegos': juegos})
+
+def detalle_producto(request, id):
+    juego = get_object_or_404(Juego, id=id)
+    return render(request, 'pages/detalle_producto.html', {'juego': juego})
+
 
     
 
