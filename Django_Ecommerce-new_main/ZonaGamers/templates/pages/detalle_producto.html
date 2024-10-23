@@ -5,7 +5,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            <!-- Imagen del producto -->
+            
             {% if juego.imagen %}
                 <img src="{{ juego.imagen.url }}" alt="{{ juego.nombre }}" class="img-fluid">
             {% else %}
@@ -13,29 +13,25 @@
             {% endif %}
         </div>
         
-        <div class="col-md-6">
+        <div class="col-md-6 text-white"> 
             <h2>{{ juego.nombre }}</h2>
             <h4 class="text-muted">${{ juego.precio }}</h4>
             <p>{{ juego.descripcion }}</p>
             
-            <!-- Mostrar si el producto está disponible o no -->
             {% if juego.stock > 0 %}
                 <p class="text-success">Producto disponible: {{ juego.stock }} en stock</p>
             {% else %}
-                <p class="text-danger">Producto  disponible</p>
+                <p class="text-danger">Producto no disponible</p>
             {% endif %}
             
-            <!-- Botón para agregar al carrito si hay stock -->
             {% if juego.stock > 0 %}
-                <a href="{% url 'add_to_cart' juego.id %}" class="btn btn-success btn-lg">Agregar al carrito</a>
+                <a href="{% url 'add_to_cart' juego.id %}" class="btn btn-success btn-lg">""</a>
             {% else %}
-                <button class="btn btn-secondary btn-lg" disabled>Sin stock</button>
+                <button class="btn btn-secondary btn-lg" disabled>con stock (30 UNIDADES)</button>
             {% endif %}
             
-            <!-- Otras opciones que puede tener el bodeguero -->
             <div class="mt-3">
                 <a href="{% url 'catalogo_bodeguero' %}" class="btn btn-info">Volver al catálogo</a>
-                
             </div>
         </div>
     </div>

@@ -9,13 +9,25 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}">
     <link rel="stylesheet" href="{% static 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'%}">
 </head>
+
 <body id="body_about">
+  <style>
+    #body_about {
+        background-image: url('{% static "images/fondoferremas.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh; 
+    }
+  </style>
 
     <!--Navbar 1-->
     <div>
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid " id="navbar1" >
-              <a class="navbar-brand" href="index"><img src="{% static 'imágenes/logo 2.jpg'%}" class="imagen_redondeada"></a>
+              <a class="navbar-brand" href="{% url 'home' %}" >
+                <img src="{% static 'images/ferremass.jpg' %}" class="imagen_redondeada" alt="Logo" style="width: 150px; height: auto;">
+              </a>
 
               <form class="d-flex mx-auto w-50" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -24,12 +36,12 @@
               <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                   <a class="nav-link" href="login.html">
-                      <span class="fas fa-user"></span>Iniciar Sesión <!--Icono de usuario-->
+                      <span class="fas fa-user"></span>Iniciar Sesión 
                   </a>
               </li>
                 <li class="nav-item">
                     <a class="nav-link" href="carrito.html">
-                        <span class="fas fa-shopping-cart" ></span>Carrito de compras<!--Icono de carrito-->
+                        <span class="fas fa-shopping-cart" ></span>Carrito de compras
                     </a>
                 </li>
             </ul>
@@ -47,16 +59,16 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav row-cols-md-1">
                   <li class="nav-item" style="background-color: green">
-                    <a class="nav-link" href="#"><span style="color: rgb(16, 212, 16); ">Xbox</span></a>
+                    <a class="nav-link" href="#"><span style="color: rgb(16, 212, 16); ">IR A</span></a>
                   </li>
                   <li class="nav-item" style="background-color: lightblue">
-                    <a class="nav-link" href="#"><span style="color: blue; ;">PlayStation</span></a>
+                    <a class="nav-link" href="#"><span style="color: blue; ;">CATALOGO</span></a>
                   </li>
                   <li class="nav-item" style="background-color: lightcoral">
-                    <a class="nav-link" href="#"><span style="color: red; ">Nintendo</span></a>
+                    <a class="nav-link" href="#"><span style="color: red; ">DE </span></a>
                   </li>
                   <li class="nav-item" style="background-color: lightyellow">
-                    <a class="nav-link" href="#"><span style="color: goldenrod; ">PC</span></a>
+                    <a class="nav-link" href="#"><span style="color: goldenrod; ">FERRREMAS</span></a>
                   </li>
                 </ul>
               </div>
@@ -66,34 +78,66 @@
 
     <!--Contenido-->
     <div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
-        <div class="row">
-          <div class="col-md-10"> <!-- Cambiado de col-md-8 a col-md-10 para un ancho aún mayor -->
-            <div class="card mb-3" style="max-width: 900px; max-height: 600px;"> <!-- Ajustado el valor de max-width a 900px y max-height a 600px -->
-              <div class="row g-0">
-                <div class="col-md-4">
-                  <img src="{% static 'imágenes/about_img.avif'%}" class="img-fluid rounded-start" alt="...">
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">Nosotros</h5>
-                    <p class="card-text">Somos una tienda online de venta de multiproductos, destacándonos en juguetes de colección, artículos de computación, accesorios, ofertas, novedades y exclusividades.
-      
-                      Nuestro principal activo son los clientes.
-                      
-                      En nuestro catálogo siempre encontrarás la mejor calidad, variedad y precio conveniente.</p>
-                    <p class="card-text"><small class="text-body-secondary"></small></p>
+      <div class="row">
+          <div class="col-md-10">
+              <div class="card mb-3" style="max-width: 900px; max-height: 600px;">
+                  <div class="row g-0">
+                      <div class="col-md-4">
+                          
+                        <img src="{% static 'images/nosotros.jpg' %}" style="width: 275px; height: auto;" />
+                        
+                         
+                          
+                      </div>
+                      <div class="col-md-8">
+                          <div class="card-body">
+                              <h5 class="card-title">Nosotros</h5>
+                              <p class="card-text">
+                                  Somos una tienda online de venta de multiproductos, destacándonos en herramientas, accesorios, ofertas, novedades y exclusividades. 
+                                  Nuestro principal activo son los clientes.
+                                  En nuestro catálogo siempre encontrarás la mejor calidad, variedad y precio conveniente.
+                              </p>
+                              <p class="card-text"><small class="text-body-secondary"></small></p>
+                          </div>
+                      </div>
                   </div>
-                </div>
               </div>
-            </div>
           </div>
-        </div>
       </div>
+  </div>
+  
       
-      
+<footer>
+        <br /><br />
+        <div class="row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <div class="card">
+                    <div class="card-body" id="footers">
+                        <h5 class="card-title" style="color: blueviolet">CONTACTO</h5>
+                        <ul>
+                            <li>Contáctanos a través de Redes sociales o al mail servicioalcliente@ferremas.cl.</li>
+                            <li>HORARIO DE ATENCIÓN TIENDA WEB Lunes a Viernes: De 08:00 AM a 17:30</li>
+                            <li>Acerca de <a href="about">Nosotros</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 m">
+                <div class="card">
+                    <div class="card-body" id="footers">
+                        <h5 class="card-title" style="color: blueviolet">Nuestros Medios de Pago</h5>
+                        <img src="{% static 'images/webpay-plus-integracion.png' %}" style="width: 150px; height: auto;" />
+                        <img src="{% static 'images/mach.jpg' %}" style="width: 150px; height: auto;" />
+                        <img src="{% static 'images/kippu.png' %}" style="width: 150px; height: auto;" />
+                        <a href="tipo_pago.html" class="btn btn-primary" style="margin-top: 10px">Tipo de Pago</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</footer>   
       
       
   
- <script src="js/bootstrap.bundle.min.js"></script>   
+ <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>

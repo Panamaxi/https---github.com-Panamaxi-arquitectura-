@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container mt-5">
   <div class="row">
-      <h2 id="titulo_catalogo" class="text-center" style="color: white;">Nuestro catálogo de ferremas</h2>
+      <h2 id="titulo_catalogo" class="text-center" style="color: white;">🛠️Nuestro catálogo de ferremas🛠️</h2>
   </div>
 </div>
 
@@ -37,7 +37,7 @@
             <h5 class="card-title">{{ juego.nombre }}</h5>
             <h5 class="card-price">${{ juego.precio }}</h5>
             <p class="card-description">{{ juego.descripcion }}</p>
-            <a href="{% url 'add_to_cart' juego.id %}" class="btn btn-success btn-block">COMPRAR</a> <!-- Asegúrate que el ID esté correcto -->
+            <a href="{% url 'add_to_cart' juego.id %}" class="btn btn-success btn-block">COMPRAR💵</a> 
         </div>
     </div> 
     {% empty %}

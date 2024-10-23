@@ -1,4 +1,4 @@
-{% extends '../base/base.html' %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,13 +10,27 @@
     <link rel="stylesheet" href="{% static 'Estilos.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
+
+<style>
+  #body_producto {
+      background-image: url('{% static "images/fondoferremas.jpg" %}');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh; 
+  }
+</style>
+
 <body id="body_producto">
 
-  <!-- Navbar -->
+  
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid" id="navbar1">
-      <a class="navbar-brand" href="index"><img src="{% static 'imágenes/logo 2.jpg' %}" class="imagen_redondeada" alt="Logo"></a>
-      <form class="d-flex mx-auto w-50" role="search">
+      <a class="navbar-brand" href="{% url 'home' %}" >
+        <img src="{% static 'images/ferremass.jpg' %}" class="imagen_redondeada" alt="Logo" style="width: 150px; height: auto;">
+      </a>
+      
+      <form class="d-flex mx-auto w-20" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
@@ -44,16 +58,16 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav row-cols-md-1">
           <li class="nav-item" style="background-color: green">
-            <a class="nav-link" href="#"><span style="color: rgb(16, 212, 16);">Xbox</span></a>
+            <a class="nav-link" href="#"><span style="color: rgb(16, 212, 16);">IR A</span></a>
           </li>
           <li class="nav-item" style="background-color: lightblue">
-            <a class="nav-link" href="#"><span style="color: blue;">PlayStation</span></a>
+            <a class="nav-link" href="#"><span style="color: blue;">CATALOGO</span></a>
           </li>
           <li class="nav-item" style="background-color: lightcoral">
-            <a class="nav-link" href="#"><span style="color: red;">Nintendo</span></a>
+            <a class="nav-link" href="#"><span style="color: red;">DE </span></a>
           </li>
           <li class="nav-item" style="background-color: lightyellow">
-            <a class="nav-link" href="#"><span style="color: goldenrod;">PC</span></a>
+            <a class="nav-link" href="#"><span style="color: goldenrod;">FERREMAS</span></a>
           </li>
         </ul>
       </div>
@@ -62,34 +76,53 @@
 
   <main>
     <div class="card mt-3">
-      <!-- Verifica que la ruta sea correcta -->
-      <img src="{% static 'images/llaves.jpeg' %}" class="card-img-top" alt="Imagen del producto de la llave">
-      <div class="card-body">
-        <h5 class="card-title">Spider-Man 2</h5>
-        <p class="card-text">Con dos personajes, Peter Parker y Miles Morales, y cambiar entre los dos heroicos Spider-Men durante sus aventuras de lucha contra el crimen para vivir y experimentar el estilo de juego.</p>
-        <span class="precio">$70.000 pesos</span>
-        <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#sinExistenciasModal">Agregar al carrito</button>
-      </div>
+        <div class="text-center"> 
+          <img src="{% static 'images/llaves.jpeg' %}" 
+          class="card-img" alt="Imagen del producto de la llave" style="max-width: 600px; height: auto;">
+
+        </div>
+
+        <div class="text-center">
+            <h5 class="card-title">Set de llaves </h5>
+            <h5 class="card-title">set de llaves de 2.5mm a 20mm de exelente calida japonesa para sus proyectos junto a ferremas🔧🛠️.</h5>
+            <h5 class="precio">$5.000 pesos</h5>
+            <a href="{% url 'catalogo' %}" class="btn btn-primary">Ver en el catalogo</a>
+        </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="sinExistenciasModal" tabindex="-1" aria-labelledby="sinExistenciasModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="sinExistenciasModalLabel">Sin existencias</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    
+    
+    
+</main>
+<footer>
+  <br /><br />
+  <div class="row">
+      <div class="col-sm-6 mb-3 mb-sm-0">
+          <div class="card">
+              <div class="card-body" id="footers">
+                  <h5 class="card-title" style="color: blueviolet">CONTACTO</h5>
+                  <ul>
+                      <li>Contáctanos a través de Redes sociales o al mail servicioalcliente@ferremas.cl.</li>
+                      <li>HORARIO DE ATENCIÓN TIENDA WEB Lunes a Viernes: De 08:00 AM a 17:30</li>
+                      <li>Acerca de <a href="about">Nosotros</a></li>
+                  </ul>
+              </div>
           </div>
-          <div class="modal-body">
-            Lo sentimos, este producto no tiene existencias disponibles en este momento.
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          </div>
-        </div>
       </div>
-    </div>
-  </main>
+      <div class="col-sm-6 m">
+          <div class="card">
+              <div class="card-body" id="footers">
+                  <h5 class="card-title" style="color: blueviolet">Nuestros Medios de Pago</h5>
+                  <img src="{% static 'images/webpay-plus-integracion.png' %}" style="width: 150px; height: auto;" />
+                  <img src="{% static 'images/mach.jpg' %}" style="width: 150px; height: auto;" />
+                  <img src="{% static 'images/kippu.png' %}" style="width: 150px; height: auto;" />
+                  
+              </div>
+          </div>
+      </div>
+  </div>
+</footer>
+
 
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>

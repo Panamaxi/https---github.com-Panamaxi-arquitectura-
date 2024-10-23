@@ -102,6 +102,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# settings.py
+#TRANSBANK_API_KEY = "tu-api-key"  # La API key proporcionada por Transbank
+#TRANSBANK_COMMERCE_CODE = "597055555532"  # El commerce code para Transacciones Diferidas
+#TRANSBANK_API_URL = "https://webpay3gint.transbank.cl"  # URL del entorno de integración de Transbank
+
+TRANSBANK_API_URL = "https://webpay3gint.transbank.cl"
+TRANSBANK_COMMERCE_CODE = "597055555532"  
+TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"  
+TRANSBANK_ENVIRONMENT = 'TEST'  
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -129,3 +140,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = 'login'
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
