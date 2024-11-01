@@ -38,15 +38,18 @@
             <h5 class="card-price">${{ juego.precio }}</h5>
             <p class="card-description">{{ juego.descripcion }}</p>
 
-        {% if juego.stock > 0 %}
-            <p class="text-success">Producto disponible: {{ juego.stock }} en stock</p>
-        {% else %}
-            <p class="text-danger">Producto disponible</p>
-        {% endif %}
-
+            {% if juego.stock > 0 %}
+                <p class="text-success">Producto disponible: {{ juego.stock }} en stock</p>
+            {% else %}
+                <p class="text-danger">Producto no disponible</p>
+            {% endif %}
             
             <a href="{% url 'detalle_producto' juego.id %}" class="btn btn-info btn-block">Ver stock</a>
-
+            
+            <div class="mt-2">
+                <a href="{% url 'aumentar_stock' juego.id %}" class="btn btn-success">Aumentar Stock</a>
+                <a href="{% url 'disminuir_stock' juego.id %}" class="btn btn-warning">Disminuir Stock</a>
+            </div>
         </div>
     </div> 
     {% empty %}

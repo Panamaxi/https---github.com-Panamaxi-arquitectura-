@@ -16,6 +16,8 @@ urlpatterns = [
     path ("bodeguero", render_views.bodeguero,name="bodeguero"),
     path('catalogo_bodeguero/', render_views.catalogo_bodeguero, name='catalogo_bodeguero'),
     path('producto/<int:id>/', render_views.detalle_producto, name='detalle_producto'),
+    path('aumentar_stock/<int:id>/', render_views.aumentar_stock, name='aumentar_stock'),
+    path('disminuir_stock/<int:id>/', render_views.disminuir_stock, name='disminuir_stock'),
 
     # Login views
     path ("login_user", user_views.login_user,name="login_user"),
@@ -30,7 +32,8 @@ urlpatterns = [
     path('pago/iniciar/', carrito_views.iniciar_pago, name='iniciar_pago'),
     path('pago/exito/', carrito_views.confirmar_pago, name='confirmar_pago'),
     path('convertir_dinero/', carrito_views.convertir_dinero, name='convertir_dinero'),
-    path('convertir_clp_a_usd/', carrito_views.convertir_clp_a_usd, name='convertir_clp_a_usd'),
+    path('clear_cart/', carrito_views.clear_cart, name='clear_cart'),
+    #path('convertir_clp_a_usd/', carrito_views.convertir_clp_a_usd, name='convertir_clp_a_usd'),
     #path ("clear_cart/<int:cartId>", carrito_views.clear_cart,name="clear_cart")
     #path('create/', carrito_views.create, name="create"),
     

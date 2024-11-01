@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from ..models import Usuario, Carrito, Juego, CarritoJuego
 from django.contrib.auth.decorators import login_required
@@ -84,6 +85,23 @@ def catalogo_bodeguero(request):
 def detalle_producto(request, id):
     juego = get_object_or_404(Juego, id=id)
     return render(request, 'pages/detalle_producto.html', {'juego': juego})
+
+def aumentar_stock(request, id):
+    juego = get_object_or_404(Juego, id=id)
+    juego.stock += 1  # Aumentar el stock en 1
+    juego.save()
+    messages.success(request, f'Se ha aumentado el stock del juego {juego.nombre}.')
+    return redirect(request, 'pages/catalogo_bodeguero.html')
+
+def disminuir_stock(request, id):
+    juego = get_object_or_404(Juego, id=id)
+    if juego.stock > 0:
+        juego.stock -= 1  # Disminuir el stock en 1
+        juego.save()
+        messages.success(request, f'Se ha disminuido el stock del juego {juego.nombre}.')
+    else:
+        messages.error(request, f'No se puede disminuir el stock del juego {juego.nombre}. Stock ya es 0.')
+    return redirect(request, 'pages/catalogo_bodeguero.html')
 
 
     

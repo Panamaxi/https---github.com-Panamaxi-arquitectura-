@@ -37,15 +37,19 @@ def remove_from_cart(request, id):
     messages.success(request, f'Producto {game.nombre} eliminado del carrito')
     return render_misma_vista(request)
 
-def clear_cart(request,cartId):
+def clear_cart(request):
     cart = get_or_create_cart(request)
     carrito_juego = CarritoJuego.objects.filter(carrito=cart)
     for juego in carrito_juego:
         juego.delete()
+    
+    messages.success(request, 'El carrito ha sido vaciado.')
     return render_misma_vista(request)
+
 
 def iniciar_pago(request):
     cart = get_or_create_cart(request)
+    
     total_amount = cart.total  # Obtén el monto total del carrito
     buy_order = 'order12345'  
     session_id = 'session12345'  
@@ -92,11 +96,46 @@ def confirmar_pago(request):
     
     
 def convertir_dinero(request):
-    return render(request, 'pages/convertir_dinero.html')
+    # Obtiene el carrito actual y su total en CLP
+    cart = get_or_create_cart(request)
+    monto_clp = cart.total
+
+    # Obtiene la tasa de cambio
+    tasa_cambio = obtener_tasa_cambio()
+
+    if tasa_cambio:
+        monto_usd = monto_clp / tasa_cambio
+        # Muestra un mensaje con el monto convertido
+        messages.success(request, f"El total de ${monto_clp:,.0f} CLP es aproximadamente ${monto_usd:.2f} USD.")
+    else:
+        messages.error(request, "No se pudo obtener la tasa de cambio. Intente nuevamente.")
+
+    return redirect('carrito')
+
+def obtener_tasa_cambio():
+    email = "maximilianoduarte824@gmail.com"
+    contrasena = "Maxi1234"
+
+    siete = bcchapi.Siete(email, contrasena)
+    df_series = siete.buscar("dólar")
+
+    if not df_series.empty:
+        codigo_serie = df_series[df_series['spanishTitle'].str.contains("Dólar observado", case=False)].iloc[0]['seriesId']
+        df_cambio = siete.cuadro(
+            series=[codigo_serie],
+            nombres=["usd_clp"],
+            desde="2023-01-01",
+            hasta="2024-12-31",
+            frecuencia="D",
+            observado={"usd_clp": "last"}
+        )
+        return df_cambio['usd_clp'].iloc[-1]
+    return None
 
 
 
-def convertir_clp_a_usd(request):
+
+#def convertir_clp_a_usd(request):
     if request.method == "POST":
         monto_clp = float(request.POST.get('monto_clp', 0))
         email = request.POST.get('email')
