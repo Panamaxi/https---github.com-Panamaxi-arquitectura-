@@ -17,3 +17,11 @@ class PedidoForm(ModelForm):
     class Meta:
         model = Pedido
         fields = "__all__"
+        
+# forms.py
+
+#class ConversionForm(forms.Form):
+    email = forms.EmailField(label='Email')
+    contrasena = forms.CharField(widget=forms.PasswordInput, label='Contraseña')
+    monto_usd = forms.FloatField(label='Monto en USD')
+

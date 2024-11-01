@@ -29,6 +29,8 @@ urlpatterns = [
     path ("remove_from_cart/<int:id>", carrito_views.remove_from_cart,name="remove_from_cart"),
     path('pago/iniciar/', carrito_views.iniciar_pago, name='iniciar_pago'),
     path('pago/exito/', carrito_views.confirmar_pago, name='confirmar_pago'),
+    path('convertir_dinero/', carrito_views.convertir_dinero, name='convertir_dinero'),
+    path('convertir_clp_a_usd/', carrito_views.convertir_clp_a_usd, name='convertir_clp_a_usd'),
     #path ("clear_cart/<int:cartId>", carrito_views.clear_cart,name="clear_cart")
     #path('create/', carrito_views.create, name="create"),
     

@@ -1,0 +1,28 @@
+{% extends '../base/base.html' %}
+{% load static %}
+{% block content %}
+    <style>
+        .text-white {
+            color: white;
+        }
+    </style>
+    <div class="container mt-5">
+        <h1 class="text-white">Convertir Dinero</h1>
+        <form method="post" action="{% url 'convertir_clp_a_usd' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="monto_clp" class="text-white">Monto en CLP:</label>
+                <input type="number" class="form-control" name="monto_clp" required>
+            </div>
+            <div class="form-group">
+                <label for="email" class="text-white">Email:</label>
+                <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="contrasena" class="text-white">Contraseña:</label>
+                <input type="password" class="form-control" name="contrasena" required>
+            </div>
+            <button type="submit" class="btn btn-success">Convertir</button>
+        </form>
+    </div>
+{% endblock %}
