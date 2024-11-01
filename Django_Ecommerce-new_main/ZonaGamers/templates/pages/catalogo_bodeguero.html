@@ -3,25 +3,17 @@
 <link rel="stylesheet" href="{% static 'css/Estilos.css' %}" />
 {% block content %}
 <div class="container mt-5">
-  <div class="row">
-      <h2 id="titulo_catalogo" class="text-center" style="color: white;">Bodega de ferremas</h2>
-  </div>
+    <div class="row">
+        <h2 id="titulo_catalogo" class="text-center" style="color: white;">Bodega de ferremas</h2>
+    </div>
 </div>
 
-<!-- Formulario de búsqueda -->
-<div class="row">
-    <form method="GET" action="{% url 'catalogo' %}" class="mb-5">
-        <div class="input-group">
-            <input type="text" class="form-control" name="q" placeholder="Buscar producto...">
-            <button class="btn btn-primary" type="submit">Buscar</button>
-        </div>
-    </form>
-</div>
-
-<!-- Mensaje de error -->
-{% if mensaje_error %}
-    <div class="alert alert-danger" role="alert">
-        {{ mensaje_error }}
+<!-- Notificaciones -->
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
     </div>
 {% endif %}
 
@@ -56,6 +48,5 @@
         <p>No hay juegos disponibles.</p>
     {% endfor %}
 </div>
-
 
 {% endblock %}

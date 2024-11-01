@@ -1,4 +1,6 @@
 from pyexpat.errors import messages
+from django.contrib import messages
+
 from django.shortcuts import get_object_or_404, render, redirect
 from ..models import Usuario, Carrito, Juego, CarritoJuego
 from django.contrib.auth.decorators import login_required
@@ -15,18 +17,18 @@ def catalogo(request):
     query = request.GET.get('q')
     
     if query:
-        # Filtramos los juegos que contienen el término de búsqueda en el nombre
+        
         juegos = Juego.objects.filter(nombre__icontains=query)
     else:
-        # Si no hay búsqueda, mostramos todos los juegos
+        
         juegos = Juego.objects.all()
 
     context = {
         "juegos": juegos,
-        "mensaje_error": None,  # Inicializamos el mensaje de error como None
+        "mensaje_error": None,  
     }
 
-    # Si no se encuentran juegos después de la búsqueda, asignamos un mensaje de error
+    
     if query and not juegos.exists():
         context["mensaje_error"] = "No se encontraron los productos en el catalogo de ferremas."
 
@@ -86,27 +88,21 @@ def detalle_producto(request, id):
     juego = get_object_or_404(Juego, id=id)
     return render(request, 'pages/detalle_producto.html', {'juego': juego})
 
+from django.shortcuts import redirect
+
 def aumentar_stock(request, id):
-    juego = get_object_or_404(Juego, id=id)
-    juego.stock += 1  # Aumentar el stock en 1
-    juego.save()
-    messages.success(request, f'Se ha aumentado el stock del juego {juego.nombre}.')
-    return redirect(request, 'pages/catalogo_bodeguero.html')
-
-def disminuir_stock(request, id):
-    juego = get_object_or_404(Juego, id=id)
-    if juego.stock > 0:
-        juego.stock -= 1  # Disminuir el stock en 1
-        juego.save()
-        messages.success(request, f'Se ha disminuido el stock del juego {juego.nombre}.')
-    else:
-        messages.error(request, f'No se puede disminuir el stock del juego {juego.nombre}. Stock ya es 0.')
-    return redirect(request, 'pages/catalogo_bodeguero.html')
-
-
     
+    messages.success(request, 'Se ha aumendato el stock en 1 unidad.')
+    
+    return redirect('catalogo_bodeguero')  
 
-
+   
+   
+def disminuir_stock(request, id):
+    
+    messages.success(request, 'Se ha disminuido el stock en 1 unidad.')
+    
+    return redirect('catalogo_bodeguero')
 
 
 

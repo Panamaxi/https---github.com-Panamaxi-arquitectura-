@@ -50,7 +50,7 @@ def clear_cart(request):
 def iniciar_pago(request):
     cart = get_or_create_cart(request)
     
-    total_amount = cart.total  # Obtén el monto total del carrito
+    total_amount = cart.total  
     buy_order = 'order12345'  
     session_id = 'session12345'  
     return_url = 'http://tu_dominio.com/confirmar_pago/'  
@@ -64,7 +64,7 @@ def iniciar_pago(request):
         response = transaction.create(
             buy_order=buy_order,
             session_id=session_id,
-            amount=total_amount,  # Usa el monto total aquí
+            amount=total_amount,  
             return_url=return_url
         )
 
@@ -96,16 +96,16 @@ def confirmar_pago(request):
     
     
 def convertir_dinero(request):
-    # Obtiene el carrito actual y su total en CLP
+   
     cart = get_or_create_cart(request)
     monto_clp = cart.total
 
-    # Obtiene la tasa de cambio
+    
     tasa_cambio = obtener_tasa_cambio()
 
     if tasa_cambio:
         monto_usd = monto_clp / tasa_cambio
-        # Muestra un mensaje con el monto convertido
+        
         messages.success(request, f"El total de ${monto_clp:,.0f} CLP es aproximadamente ${monto_usd:.2f} USD.")
     else:
         messages.error(request, "No se pudo obtener la tasa de cambio. Intente nuevamente.")
