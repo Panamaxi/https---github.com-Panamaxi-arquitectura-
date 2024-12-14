@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            text-align: center;
+            padding: 5%;
+        }
+        .message {
+            color: #00796B;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✅ ¡Tu Pago Fue Exitoso!</h1>
+    <p class="message">Gracias por comprar en <strong>Ferremas</strong>.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Volver a inicio </a>
+
+    
+
+</body>
+</html>

@@ -10,12 +10,18 @@ from ..models import Carrito, CarritoJuego, Juego
 from django.http import HttpResponseRedirect
 from ..utils import render_misma_vista
 from django.contrib import messages
+from decimal import Decimal, ROUND_DOWN
 
 
 def get_or_create_cart(request):
     cart, created = Carrito.objects.get_or_create(id=1)
     cart.total = sum(item.juego.precio * item.cantidad for item in cart.carritojuego_set.all())
+
+    # Calcular total en USD usando tasa de cambio
+    tasa_cambio = obtener_tasa_cambio()
+    cart.total_usd = round(cart.total / tasa_cambio, 2) if tasa_cambio else None
     return cart
+
 
 
 def add_to_cart(request, id):
@@ -49,15 +55,30 @@ def clear_cart(request):
 
 from django.urls import reverse
 
+def convertir_usd_a_clp(monto_usd):
+    tasa_cambio = obtener_tasa_cambio()
+    if tasa_cambio:
+        return round(monto_usd * tasa_cambio, 0) 
+    else:
+        return None
+
+
 def iniciar_pago(request):
     cart = get_or_create_cart(request)
+    
+    monto_usd = cart.total_usd  # total_usd calculado previamente
+    monto_clp = convertir_usd_a_clp(monto_usd)
+
+    if not monto_clp:
+        messages.error(request, "No se pudo obtener la tasa de cambio. Intente nuevamente.")
+        return redirect('carrito')
     
     total_amount = cart.total  # Total del carrito
     buy_order = 'order12345'  # Orden de compra fija
     session_id = 'session12345'  # Sesión fija
 
     # Generar la URL del carrito usando reverse
-    return_url = request.build_absolute_uri(reverse('carrito'))  
+    return_url = request.build_absolute_uri(reverse('pago_exito'))  
 
     transaction = Transaction(WebpayOptions(
         commerce_code=settings.TRANSBANK_COMMERCE_CODE,
@@ -68,13 +89,14 @@ def iniciar_pago(request):
         response = transaction.create(
             buy_order=buy_order,
             session_id=session_id,
-            amount=total_amount,
+            
+            amount=int(monto_clp),  # Transbank requiere monto como entero
             return_url=return_url  # URL generada dinámicamente
         )
         return redirect(response['url'] + '?token_ws=' + response['token'])
     except Exception as e:
         messages.error(request, f'Error al iniciar el pago: {str(e)}')
-        return redirect('carrito')
+        return redirect('pago_exito')
 
 
 
@@ -103,6 +125,13 @@ def confirmar_pago(request):
         messages.error(request, f'Error al confirmar el pago: {str(e)}')
 
     return redirect('carrito')  # Siempre redirige al carrito
+
+def pago_exito(request):
+    # Mensaje de éxito después del pago
+    messages.success(request, "Tu pago se realizó con éxito. ¡Gracias por comprar en Ferremas!")
+
+    return render(request, 'pages/pago_exito.html', {'request': request})
+
     
 def convertir_dinero(request):
    
