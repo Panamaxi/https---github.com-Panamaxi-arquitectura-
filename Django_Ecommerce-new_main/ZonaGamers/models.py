@@ -58,27 +58,3 @@ class CarritoJuego(models.Model):
 # Create your models here.
 #Integrar con el modelo de django para seguridad
 
-
-
-# Sin usar
-class Usuario(models.Model):
-    rut = models.CharField(primary_key=True, max_length=10)
-    nombre = models.CharField(max_length=80)
-    email = models.EmailField(max_length=100, unique=True, blank=True, null=True)
-    apellido_paterno = models.CharField(max_length=30)
-    apellido_materno = models.CharField(max_length=30)
-    telefono = models.CharField(max_length=12)
-    password = models.CharField(max_length=30)
-    direccion = models.CharField(max_length=50, blank=True, null=True)
-    
-
-    def __str__(self):
-        return (
-            str(self.nombre)
-            + " " +
-            str(self.apellido_paterno)
-            + " " +
-            str(self.apellido_materno)
-        )
-    
-   

@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',	
-    'ZonaGamers'
+    'ZonaGamers',
+    'apiferremas',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
