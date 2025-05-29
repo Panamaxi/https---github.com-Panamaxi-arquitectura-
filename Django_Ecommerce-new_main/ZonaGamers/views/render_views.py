@@ -2,7 +2,6 @@ from pyexpat.errors import messages
 from django.contrib import messages
 
 from django.shortcuts import get_object_or_404, render, redirect
-from ..models import Usuario, Carrito, Juego, CarritoJuego
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -17,22 +16,22 @@ def catalogo(request):
     query = request.GET.get('q')
     
     if query:
-        
-        juegos = Juego.objects.filter(nombre__icontains=query)
+        pass
+        #juegos = Juego.objects.filter(nombre__icontains=query)
     else:
-        
-        juegos = Juego.objects.all()
+        pass
+        #juegos = Juego.objects.all()
 
-    context = {
-        "juegos": juegos,
-        "mensaje_error": None,  
-    }
+    #context = {
+    #    "juegos": juegos,
+    #    "mensaje_error": None,  
+    #}
 
     
-    if query and not juegos.exists():
-        context["mensaje_error"] = "No se encontraron los productos en el catalogo de ferremas."
+    #if query and not juegos.exists():
+    #    context["mensaje_error"] = "No se encontraron los productos en el catalogo de ferremas."
 
-    return render(request, 'pages/catalogo.html', context)
+    return render(request, 'pages/catalogo.html')
 
 def producto_spider(request):
     context = []
@@ -45,14 +44,14 @@ def about(request):
 
 @login_required
 def carrito(request):
-    carrito = CarritoJuego.objects.filter(carrito=1)
-    total = 0
-    for item in carrito:
-        item.total = item.juego.precio * item.cantidad
-        total += item.total
-    carrito.total = total
-    context = {'carrito': carrito} 
-    return render(request, 'pages/carrito.html', context)
+    #carrito = CarritoJuego.objects.filter(carrito=1)
+    #total = 0
+    #for item in carrito:
+    #    item.total = item.juego.precio * item.cantidad
+    #    total += item.total
+    #carrito.total = total
+    #context = {'carrito': carrito} 
+    return render(request, 'pages/carrito.html')
 
 def login(request):
     if request.user.is_authenticated:
@@ -69,26 +68,24 @@ def producto_spider(request):
     return render(request,'pages/producto_spider.html',context)
 
 def crud(request):
-    usuarios = Usuario.objects.all()
-    context = {
-        "usuarios": usuarios,
-    }
-    return render(request, "pages/crud.html", context)
+    #usuarios = Usuario.objects.all()
+    #context = {
+    #    "usuarios": usuarios,
+    #}
+    return render(request, "pages/crud.html")
 
 def bodeguero(request):
     context = {} 
     return render(request,'pages/bodeguero.html',context)
 
 def catalogo_bodeguero(request):
-    juegos = Juego.objects.all() 
+    #juegos = Juego.objects.all() 
     # Obtiene todos los productos
-    return render(request, 'pages/catalogo_bodeguero.html', {'juegos': juegos})
+    return render(request, 'pages/catalogo_bodeguero.html')
 
 def detalle_producto(request, id):
-    juego = get_object_or_404(Juego, id=id)
-    return render(request, 'pages/detalle_producto.html', {'juego': juego})
-
-from django.shortcuts import redirect
+    #juego = get_object_or_404(Juego, id=id)
+    return render(request, 'pages/detalle_producto.html')
 
 def aumentar_stock(request, id):
     

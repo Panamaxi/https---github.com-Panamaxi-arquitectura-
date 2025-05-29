@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Juego(models.Model):
@@ -36,25 +35,3 @@ class Pedido(models.Model):
             + " - " +
             str(self.cantidad)
         )
-
-class Carrito(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE , null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Carrito {self.id} "
-
-
-class CarritoJuego(models.Model):
-    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE)
-    juego = models.ForeignKey(Juego, on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        unique_together = ('carrito', 'juego')
-
-    def __str__(self):
-        return f"{self.cantidad} of {self.juego.nombre} in cart {self.carrito.id}"  
-# Create your models here.
-#Integrar con el modelo de django para seguridad
-

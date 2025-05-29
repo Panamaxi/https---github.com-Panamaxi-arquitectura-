@@ -1,84 +1,114 @@
-from gettext import translation
-import bcchapi
-from django.shortcuts import redirect
-from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
-import uuid
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
-from django.shortcuts import get_object_or_404, redirect, render
-import requests
-from ..models import Carrito, CarritoJuego, Juego
-from django.http import HttpResponseRedirect
-from ..utils import render_misma_vista
 from django.contrib import messages
-from decimal import Decimal, ROUND_DOWN
+from django.urls import reverse
 
+from apiferremas.models import Carrito, CarritoItem, Producto
+
+import bcchapi
+from transbank.webpay.webpay_plus.transaction import Transaction, WebpayOptions
+
+
+# --- Lógica auxiliar --- #
+
+def render_misma_vista(request):
+    """
+    Renderiza la misma vista que se está solicitando, útil para mantener el contexto del carrito.
+    """
+    return render(request, request.path.split('/')[-1], {})
+
+def obtener_tasa_cambio():
+    siete = bcchapi.Siete("maximilianoduarte824@gmail.com", "Maxi1234")
+    df_series = siete.buscar("dólar")
+    if not df_series.empty:
+        codigo = df_series[df_series['spanishTitle'].str.contains("observado", case=False)].iloc[0]['seriesId']
+        df_cambio = siete.cuadro(
+            series=[codigo],
+            nombres=["usd_clp"],
+            desde="2023-01-01",
+            hasta="2024-12-31",
+            frecuencia="D",
+            observado={"usd_clp": "last"}
+        )
+        return df_cambio['usd_clp'].iloc[-1]
+    return None
+
+
+def convertir_usd_a_clp(monto_usd):
+    tasa = obtener_tasa_cambio()
+    return round(monto_usd * tasa, 0) if tasa else None
+
+
+# --- Carrito --- #
 
 def get_or_create_cart(request):
-    cart, created = Carrito.objects.get_or_create(id=1)
-    cart.total = sum(item.juego.precio * item.cantidad for item in cart.carritojuego_set.all())
+    if request.user.is_authenticated:
+        cart, created = Carrito.objects.get_or_create(usuario=request.user)
+        # Calculamos el total usando el método definido en el modelo
+        cart_total = cart.total()
+        tasa = obtener_tasa_cambio()
+        total_usd = round(cart_total / tasa, 2) if tasa else None
+        # Si quieres guardar estos valores en el modelo, deberías tener campos para ello, si no, simplemente devuelve o usa estas variables
+        cart.total_calculado = cart_total
+        cart.total_usd_calculado = total_usd
+        return cart
+    else:
+        return None  # usuario anónimo no tiene carrito persistente
 
-    # Calcular total en USD usando tasa de cambio
-    tasa_cambio = obtener_tasa_cambio()
-    cart.total_usd = round(cart.total / tasa_cambio, 2) if tasa_cambio else None
-    return cart
 
+def add_to_cart(request, codigo_producto):
+    if not request.user.is_authenticated:
+        messages.error(request, "Debes iniciar sesión para agregar productos al carrito.")
+        return redirect("login")
 
-
-def add_to_cart(request, id):
     cart = get_or_create_cart(request)
-    game = Juego.objects.get(id=id)
-    carrito_juego, created = CarritoJuego.objects.get_or_create(carrito=cart, juego=game)
-    carrito_juego.cantidad += 1
-    carrito_juego.save()
-    messages.success(request, f'Producto {game.nombre} agregado al carrito')
-   
+    producto = get_object_or_404(Producto, codigo_producto=codigo_producto)
+
+    carrito_item, created = CarritoItem.objects.get_or_create(carrito=cart, producto=producto)
+    carrito_item.cantidad += 1
+    carrito_item.save()
+    messages.success(request, f'Producto {producto.nombre} agregado al carrito')
     return render_misma_vista(request)
 
-def remove_from_cart(request, id):
+
+def remove_from_cart(request, codigo_producto):
     cart = get_or_create_cart(request)
-    game = Juego.objects.get(id=id)
-    carrito_juego = CarritoJuego.objects.get(carrito=cart, juego=game)
-    carrito_juego.cantidad -= 1
-    carrito_juego.save()
-    messages.success(request, f'Producto {game.nombre} eliminado del carrito')
+    producto = get_object_or_404(Producto, codigo_producto=codigo_producto)
+    carrito_item = get_object_or_404(CarritoItem, carrito=cart, producto=producto)
+
+    carrito_item.cantidad -= 1
+    if carrito_item.cantidad <= 0:
+        carrito_item.delete()
+    else:
+        carrito_item.save()
+
+    messages.success(request, f'{producto.nombre} eliminado del carrito')
     return render_misma_vista(request)
+
 
 def clear_cart(request):
     cart = get_or_create_cart(request)
-    carrito_juego = CarritoJuego.objects.filter(carrito=cart)
-    for juego in carrito_juego:
-        juego.delete()
-    
-    messages.success(request, 'El carrito ha sido vaciado.')
+    if cart:
+        cart.items.all().delete()
+        messages.success(request, 'El carrito ha sido vaciado.')
     return render_misma_vista(request)
 
 
-from django.urls import reverse
-
-def convertir_usd_a_clp(monto_usd):
-    tasa_cambio = obtener_tasa_cambio()
-    if tasa_cambio:
-        return round(monto_usd * tasa_cambio, 0) 
-    else:
-        return None
-
+# --- Pago --- #
 
 def iniciar_pago(request):
     cart = get_or_create_cart(request)
-    
-    monto_usd = cart.total_usd  # total_usd calculado previamente
-    monto_clp = convertir_usd_a_clp(monto_usd)
 
-    if not monto_clp:
-        messages.error(request, "No se pudo obtener la tasa de cambio. Intente nuevamente.")
+    if not cart or cart.total() == 0:
+        messages.error(request, "Tu carrito está vacío.")
         return redirect('carrito')
-    
-    total_amount = cart.total  # Total del carrito
-    buy_order = 'order12345'  # Orden de compra fija
-    session_id = 'session12345'  # Sesión fija
 
-    # Generar la URL del carrito usando reverse
-    return_url = request.build_absolute_uri(reverse('pago_exito'))  
+    monto_clp = convertir_usd_a_clp(cart.total_usado_calculado if hasattr(cart, 'total_usado_calculado') else 0)
+    if not monto_clp:
+        messages.error(request, "No se pudo obtener la tasa de cambio.")
+        return redirect('carrito')
+
+    return_url = request.build_absolute_uri(reverse('pago_exito'))
 
     transaction = Transaction(WebpayOptions(
         commerce_code=settings.TRANSBANK_COMMERCE_CODE,
@@ -87,24 +117,21 @@ def iniciar_pago(request):
 
     try:
         response = transaction.create(
-            buy_order=buy_order,
-            session_id=session_id,
-            
-            amount=int(monto_clp),  # Transbank requiere monto como entero
-            return_url=return_url  # URL generada dinámicamente
+            buy_order=str(cart.id),
+            session_id=str(request.user.id),
+            amount=int(monto_clp),
+            return_url=return_url
         )
         return redirect(response['url'] + '?token_ws=' + response['token'])
     except Exception as e:
         messages.error(request, f'Error al iniciar el pago: {str(e)}')
-        return redirect('pago_exito')
-
+        return redirect('carrito')
 
 
 def confirmar_pago(request):
     token = request.GET.get('token_ws')
-
     if not token:
-        messages.error(request, 'No se recibió el token de pago.')
+        messages.error(request, 'No se recibió token de pago.')
         return redirect('carrito')
 
     transaction = Transaction(WebpayOptions(
@@ -116,65 +143,35 @@ def confirmar_pago(request):
         response = transaction.commit(token)
         if response['status'] == 'AUTHORIZED':
             messages.success(request, 'Pago realizado con éxito.')
-            # Opcional: Vaciar el carrito tras el pago exitoso
             cart = get_or_create_cart(request)
-            cart.carritojuego_set.all().delete()
+            if cart:
+                cart.items.all().delete()
         else:
             messages.error(request, f'Error con el pago: {response["status"]}')
     except Exception as e:
         messages.error(request, f'Error al confirmar el pago: {str(e)}')
 
-    return redirect('carrito')  # Siempre redirige al carrito
-
-def pago_exito(request):
-    # Mensaje de éxito después del pago
-    messages.success(request, "Tu pago se realizó con éxito. ¡Gracias por comprar en Ferremas!")
-
-    return render(request, 'pages/pago_exito.html', {'request': request})
-
-    
-def convertir_dinero(request):
-   
-    cart = get_or_create_cart(request)
-    monto_clp = cart.total
-
-    
-    tasa_cambio = obtener_tasa_cambio()
-
-    if tasa_cambio:
-        monto_usd = monto_clp / tasa_cambio
-        
-        messages.success(request, f"El total de ${monto_clp:,.0f} CLP es aproximadamente ${monto_usd:.2f} USD.")
-    else:
-        messages.error(request, "No se pudo obtener la tasa de cambio. Intente nuevamente.")
-
     return redirect('carrito')
 
-def obtener_tasa_cambio():
-    email = "maximilianoduarte824@gmail.com"
-    contrasena = "Maxi1234"
 
-    siete = bcchapi.Siete(email, contrasena)
-    df_series = siete.buscar("dólar")
-
-    if not df_series.empty:
-        codigo_serie = df_series[df_series['spanishTitle'].str.contains("Dólar observado", case=False)].iloc[0]['seriesId']
-        df_cambio = siete.cuadro(
-            series=[codigo_serie],
-            nombres=["usd_clp"],
-            desde="2023-01-01",
-            hasta="2024-12-31",
-            frecuencia="D",
-            observado={"usd_clp": "last"}
-        )
-        return df_cambio['usd_clp'].iloc[-1]
-    return None
+def pago_exito(request):
+    messages.success(request, "Tu pago se realizó con éxito. ¡Gracias por tu compra!")
+    return render(request, 'pages/pago_exito.html')
 
 
+def convertir_dinero(request):
+    cart = get_or_create_cart(request)
+    if not cart:
+        messages.error(request, "No tienes carrito.")
+        return redirect('carrito')
 
+    monto_clp = cart.total()
+    tasa = obtener_tasa_cambio()
 
+    if tasa:
+        monto_usd = monto_clp / tasa
+        messages.success(request, f"CLP ${monto_clp:,.0f} ≈ USD ${monto_usd:.2f}")
+    else:
+        messages.error(request, "No se pudo obtener la tasa de cambio.")
 
-
-
-
-
+    return redirect('carrito')
